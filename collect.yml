@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BE MELT — Boussole Emploi Lys-Tourcoing</title>
+  <meta name="description" content="Toutes les offres d'emploi du territoire MELT, MEL et Eurométropole transfrontalière, en un seul endroit. Données publiques France Travail + Le Forem.">
+  <meta name="theme-color" content="#4FA8D8">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/be-melt.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="beMelt()">
+
+<header class="be-header">
+  <div class="be-logo">
+    <span class="be-logo-mark">BE</span>
+    <span>Boussole Emploi MELT</span>
+  </div>
+  <nav style="display:flex; gap:12px;">
+    <a href="#stats" class="be-cta be-cta-secondaire" style="padding:6px 12px; font-size:0.85rem;">📊 Statistiques</a>
+  </nav>
+</header>
+
+<main class="be-conteneur">
+
+  <!-- Bascule niveaux territoriaux -->
+  <div class="be-niveaux" role="tablist" aria-label="Niveau territorial">
+    <button class="be-niveau-btn" data-niveau="melt"
+            :class="{ actif: niveau === 'melt' }" @click="niveau = 'melt'">
+      🟠 MELT
+      <span style="opacity:.6; font-size:.85em">· 12 communes</span>
+    </button>
+    <button class="be-niveau-btn" data-niveau="mel"
+            :class="{ actif: niveau === 'mel' }" @click="niveau = 'mel'">
+      🟢 MEL
+      <span style="opacity:.6; font-size:.85em">· 95 communes</span>
+    </button>
+    <button class="be-niveau-btn" data-niveau="eurometropole"
+            :class="{ actif: niveau === 'eurometropole' }" @click="niveau = 'eurometropole'">
+      🟣 Eurométropole
+      <span style="opacity:.6; font-size:.85em">· transfrontalier</span>
+    </button>
+  </div>
+
+  <div class="be-grille">
+
+    <!-- Colonne filtres -->
+    <aside class="be-filtres">
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label" for="filtre-recherche">Rechercher</label>
+        <input type="text" id="filtre-recherche" placeholder="Métier, employeur, mot-clé…" x-model="recherche">
+      </div>
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label" for="filtre-commune">Ma commune</label>
+        <select id="filtre-commune" x-model="commune">
+          <option value="">— Sélectionner —</option>
+          <optgroup label="Territoire MELT">
+            <option value="59599">Tourcoing</option>
+            <option value="59279">Halluin</option>
+            <option value="59152">Comines</option>
+            <option value="59421">Mouvaux</option>
+            <option value="59090">Bondues</option>
+            <option value="59512">Roncq</option>
+            <option value="59098">Bousbecque</option>
+            <option value="59172">Deûlémont</option>
+            <option value="59352">Linselles</option>
+            <option value="59426">Neuville-en-Ferrain</option>
+            <option value="59653">Warneton</option>
+            <option value="59656">Wervicq-Sud</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label" for="filtre-contrat">Type de contrat</label>
+        <select id="filtre-contrat" x-model="contrat">
+          <option value="">Tous</option>
+          <option value="CDI">CDI</option>
+          <option value="CDD">CDD</option>
+          <option value="MIS">Intérim</option>
+          <option value="ALT">Alternance</option>
+          <option value="STAGE">Stage</option>
+        </select>
+      </div>
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label">Permis B</label>
+        <label style="display:flex; gap:6px; align-items:center; font-size:0.92rem;">
+          <input type="checkbox" x-model="sansPermis">
+          <span>Je n'ai pas le permis</span>
+        </label>
+      </div>
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label">Mode de transport</label>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <template x-for="m in modesDisponibles" :key="m.id">
+            <button type="button"
+                    class="be-badge"
+                    :class="{ 'be-badge-melt': modes.includes(m.id) }"
+                    @click="toggleMode(m.id)">
+              <span x-text="m.icone"></span>
+              <span x-text="m.label"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <div class="be-filtre-grp">
+        <label class="be-filtre-label">
+          Temps de trajet max : <strong x-text="dureeMax + ' min'"></strong>
+        </label>
+        <input type="range" min="5" max="60" step="5" x-model.number="dureeMax">
+      </div>
+
+      <button class="be-cta be-cta-secondaire" style="width:100%" @click="reset()">
+        ↺ Réinitialiser les filtres
+      </button>
+    </aside>
+
+    <!-- Colonne offres -->
+    <section>
+      <p style="color:var(--be-ardoise); font-size:0.92rem;">
+        <strong x-text="offresAffichees().length"></strong> offre(s) affichée(s)
+        — actualisé toutes les 6 heures depuis France Travail et Le Forem.
+      </p>
+
+      <!-- Offres dynamiques (échantillon de démo) -->
+      <template x-for="o in offresAffichees()" :key="o.id">
+        <article class="be-offre">
+          <h3 class="be-offre-titre" x-text="o.titre"></h3>
+          <div class="be-offre-employeur" x-text="o.employeur + ' · ' + o.commune"></div>
+          <div class="be-offre-meta">
+            <span class="be-badge" :class="`be-badge-${o.contrat.toLowerCase()}`" x-text="o.contrat"></span>
+            <span class="be-badge"
+                  :class="`be-badge-${o.niveau}`"
+                  x-text="labelNiveau(o.niveau)"></span>
+            <span class="be-badge be-badge-permis" x-show="o.permisB">⚠️ Permis B requis</span>
+            <span class="be-badge be-badge-nouveau" x-show="o.nouveau">✨ Nouveau</span>
+          </div>
+          <div class="be-mobilite" x-show="commune">
+            <template x-for="t in o.trajets" :key="t.mode">
+              <span class="be-temps"
+                    :class="{ recommande: t.recommande, incertain: !t.fiable }"
+                    x-show="modes.includes(t.mode) && t.dureeMin <= dureeMax">
+                <span x-text="t.icone"></span>
+                <span x-text="t.dureeMin + ' min'"></span>
+              </span>
+            </template>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <a :href="o.url" target="_blank" class="be-cta">Voir l'offre →</a>
+            <a :href="`https://www.google.com/maps/dir/?api=1&destination=${o.lat},${o.lon}`"
+               target="_blank" class="be-cta be-cta-secondaire" x-show="commune">
+              🗺️ Itinéraire
+            </a>
+          </div>
+        </article>
+      </template>
+
+      <div x-show="offresAffichees().length === 0"
+           style="text-align:center; padding:48px 24px; color:var(--be-ardoise);">
+        <div style="font-size:2.5rem; margin-bottom:12px;">🔍</div>
+        Aucune offre ne correspond à ces critères pour le moment.<br>
+        Essayez d'élargir le périmètre ou de modifier les filtres.
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Stats -->
+  <section id="stats" style="margin-top:48px;">
+    <h2 style="font-size:1.3rem;">📊 Lecture territoriale</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:12px;">
+      <div class="be-stat-card">
+        <div class="be-stat-nombre">412</div>
+        <div class="be-stat-label">Offres actives MELT</div>
+      </div>
+      <div class="be-stat-card">
+        <div class="be-stat-nombre">3 850</div>
+        <div class="be-stat-label">Offres actives MEL</div>
+      </div>
+      <div class="be-stat-card">
+        <div class="be-stat-nombre">6 240</div>
+        <div class="be-stat-label">Offres Eurométropole</div>
+      </div>
+      <div class="be-stat-card">
+        <div class="be-stat-nombre">38&nbsp;%</div>
+        <div class="be-stat-label">Offres accessibles sans permis (MELT)</div>
+      </div>
+    </div>
+    <p style="color:var(--be-ardoise); font-size:0.85rem; margin-top:12px;">
+      Données illustratives — les vraies stats seront générées à partir de la base SQLite après la première collecte.
+    </p>
+  </section>
+
+  <footer style="margin-top:48px; padding:24px 0; border-top:1px solid var(--be-gris-clair); color:var(--be-ardoise); font-size:0.85rem;">
+    Données : <strong>France Travail</strong> · <strong>Le Forem</strong> (Open Data Wallon) · <strong>MEL Open Data</strong> ·
+    Projet d'initiative MELT — non commercial, finalité d'insertion professionnelle.
+    <br>
+    Aucune donnée personnelle n'est transmise. Les préférences sont stockées localement dans votre navigateur.
+  </footer>
+
+</main>
+
+<script>
+function beMelt() {
+  return {
+    niveau: 'melt',
+    commune: '',
+    contrat: '',
+    recherche: '',
+    sansPermis: false,
+    dureeMax: 30,
+    modes: ['marche', 'velo', 'trottinette_electrique', 'voiture', 'transport_commun'],
+    modesDisponibles: [
+      { id: 'marche',                  icone: '🚶', label: 'Marche' },
+      { id: 'velo',                    icone: '🚲', label: 'Vélo' },
+      { id: 'trottinette_electrique',  icone: '🛴', label: 'Trottinette' },
+      { id: 'scooter',                 icone: '🛵', label: 'Scooter' },
+      { id: 'voiture',                 icone: '🚗', label: 'Voiture' },
+      { id: 'transport_commun',        icone: '🚌', label: 'Bus / Métro' },
+    ],
+    // Échantillon de démo — sera remplacé par les données SQLite générées
+    offres: [
+      { id: 1, titre: 'Vendeur(se) prêt-à-porter', employeur: 'H&M', commune: 'Tourcoing', contrat: 'CDI', niveau: 'melt', permisB: false, nouveau: true, lat: 50.7236, lon: 3.1611, url: '#', trajets: [
+        { mode: 'marche', icone: '🚶', dureeMin: 25, fiable: true, recommande: false },
+        { mode: 'velo', icone: '🚲', dureeMin: 9, fiable: true, recommande: true },
+        { mode: 'trottinette_electrique', icone: '🛴', dureeMin: 7, fiable: true, recommande: false },
+        { mode: 'voiture', icone: '🚗', dureeMin: 6, fiable: true, recommande: false },
+        { mode: 'transport_commun', icone: '🚌', dureeMin: 15, fiable: false, recommande: false },
+      ]},
+      { id: 2, titre: 'Magasinier polyvalent (H/F)', employeur: 'Decathlon Logistique', commune: 'Halluin', contrat: 'CDD', niveau: 'melt', permisB: true, nouveau: false, lat: 50.7825, lon: 3.1267, url: '#', trajets: [
+        { mode: 'marche', icone: '🚶', dureeMin: 78, fiable: true, recommande: false },
+        { mode: 'velo', icone: '🚲', dureeMin: 28, fiable: true, recommande: false },
+        { mode: 'trottinette_electrique', icone: '🛴', dureeMin: 19, fiable: true, recommande: true },
+        { mode: 'voiture', icone: '🚗', dureeMin: 12, fiable: true, recommande: false },
+        { mode: 'transport_commun', icone: '🚌', dureeMin: 34, fiable: false, recommande: false },
+      ]},
+      { id: 3, titre: 'Agent d\'entretien (H/F)', employeur: 'Mouscron Propreté', commune: 'Mouscron (BE)', contrat: 'CDI', niveau: 'eurometropole', permisB: false, nouveau: true, lat: 50.7444, lon: 3.2089, url: '#', trajets: [
+        { mode: 'marche', icone: '🚶', dureeMin: 51, fiable: true, recommande: false },
+        { mode: 'velo', icone: '🚲', dureeMin: 18, fiable: true, recommande: false },
+        { mode: 'trottinette_electrique', icone: '🛴', dureeMin: 12, fiable: true, recommande: true },
+        { mode: 'voiture', icone: '🚗', dureeMin: 9, fiable: true, recommande: false },
+        { mode: 'transport_commun', icone: '🚌', dureeMin: 22, fiable: false, recommande: false },
+      ]},
+      { id: 4, titre: 'Apprenti(e) cuisinier(ère)', employeur: 'Brasserie La Lys', commune: 'Comines', contrat: 'ALT', niveau: 'melt', permisB: false, nouveau: false, lat: 50.7625, lon: 3.0167, url: '#', trajets: [
+        { mode: 'marche', icone: '🚶', dureeMin: 95, fiable: true, recommande: false },
+        { mode: 'velo', icone: '🚲', dureeMin: 33, fiable: true, recommande: false },
+        { mode: 'trottinette_electrique', icone: '🛴', dureeMin: 22, fiable: true, recommande: false },
+        { mode: 'voiture', icone: '🚗', dureeMin: 16, fiable: true, recommande: true },
+        { mode: 'transport_commun', icone: '🚌', dureeMin: 38, fiable: false, recommande: false },
+      ]},
+    ],
+    toggleMode(id) {
+      if (this.modes.includes(id)) this.modes = this.modes.filter(m => m !== id);
+      else this.modes.push(id);
+    },
+    reset() {
+      this.commune = ''; this.contrat = ''; this.recherche = '';
+      this.sansPermis = false; this.dureeMax = 30;
+    },
+    labelNiveau(n) {
+      return { melt: '🟠 MELT', mel: '🟢 MEL', eurometropole: '🟣 Transfrontalier' }[n] || n;
+    },
+    offresAffichees() {
+      return this.offres.filter(o => {
+        // filtre niveau
+        if (this.niveau === 'melt' && o.niveau !== 'melt') return false;
+        if (this.niveau === 'mel' && !['melt','mel'].includes(o.niveau)) return false;
+        // pour eurometropole tout est inclus
+        if (this.contrat && o.contrat !== this.contrat) return false;
+        if (this.sansPermis && o.permisB) return false;
+        if (this.recherche) {
+          const q = this.recherche.toLowerCase();
+          if (!o.titre.toLowerCase().includes(q) &&
+              !o.employeur.toLowerCase().includes(q) &&
+              !o.commune.toLowerCase().includes(q)) return false;
+        }
+        // filtre durée : il faut qu'au moins un mode coché tienne dans le délai
+        if (this.commune) {
+          const ok = o.trajets.some(t => this.modes.includes(t.mode) && t.dureeMin <= this.dureeMax);
+          if (!ok) return false;
+        }
+        return true;
+      });
+    },
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+/* ============================================================
+   BE MELT — Charte visuelle V1
+   Couleurs héritées du pictogramme MELT (logotype officiel)
+   Typo : Inter (Google Fonts)
+   ============================================================ */
+
+:root {
+  /* --- Couleurs primaires --- */
+  --be-bleu-melt:        #4FA8D8;   /* bandeau LYS-TOURCOING officiel */
+  --be-bleu-melt-fonce:  #2E7BA8;   /* hover, focus */
+  --be-bleu-melt-clair:  #C7E3F1;   /* fond sélection, surbrillance */
+
+  /* --- Accents niveaux territoriaux (issus du pictogramme MELT) --- */
+  --be-melt-accent:          #F39C5E;   /* orange — niveau MELT (12 communes) */
+  --be-mel-accent:           #7CB342;   /* vert — niveau MEL (95 communes) */
+  --be-eurometropole-accent: #A569BD;   /* violet — niveau transfrontalier */
+
+  /* --- Neutres --- */
+  --be-noir:        #1A1A1A;
+  --be-ardoise:     #5A6772;
+  --be-gris:        #94A3B8;
+  --be-gris-clair:  #E2E8F0;
+  --be-fond:        #FAFBFC;
+  --be-blanc:       #FFFFFF;
+
+  /* --- Sémantique --- */
+  --be-succes:      #16A34A;
+  --be-attention:   #F59E0B;
+  --be-erreur:      #DC2626;
+  --be-info:        var(--be-bleu-melt);
+  --be-nouveau:     #F5C342;   /* jaune doré — badge "nouveau" */
+
+  /* --- Typo --- */
+  --be-font-sans:   'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --be-font-mono:   'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* --- Espacements & rayons --- */
+  --be-radius-sm: 6px;
+  --be-radius:    10px;
+  --be-radius-lg: 16px;
+  --be-shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --be-shadow:    0 4px 16px rgba(0,0,0,0.06);
+  --be-shadow-lg: 0 12px 32px rgba(0,0,0,0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --be-fond:       #0F172A;
+    --be-blanc:      #1E293B;
+    --be-noir:       #F1F5F9;
+    --be-ardoise:    #94A3B8;
+    --be-gris-clair: #334155;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--be-font-sans);
+  background: var(--be-fond);
+  color: var(--be-noir);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   Composants
+   ============================================================ */
+
+.be-header {
+  background: var(--be-blanc);
+  border-bottom: 1px solid var(--be-gris-clair);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.be-logo {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--be-noir);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.be-logo .be-logo-mark {
+  background: var(--be-bleu-melt);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--be-radius-sm);
+  font-size: 0.85em;
+  letter-spacing: 0.05em;
+}
+
+/* --- Bascule des 3 niveaux territoriaux --- */
+.be-niveaux {
+  display: flex;
+  gap: 6px;
+  background: var(--be-gris-clair);
+  padding: 4px;
+  border-radius: var(--be-radius);
+  margin: 16px 0;
+}
+.be-niveau-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--be-radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--be-ardoise);
+  transition: all 0.15s;
+}
+.be-niveau-btn:hover { color: var(--be-noir); }
+
+.be-niveau-btn.actif {
+  background: var(--be-blanc);
+  color: var(--be-noir);
+  box-shadow: var(--be-shadow-sm);
+}
+.be-niveau-btn[data-niveau="melt"].actif         { box-shadow: inset 0 -3px 0 var(--be-melt-accent), var(--be-shadow-sm); }
+.be-niveau-btn[data-niveau="mel"].actif          { box-shadow: inset 0 -3px 0 var(--be-mel-accent),  var(--be-shadow-sm); }
+.be-niveau-btn[data-niveau="eurometropole"].actif{ box-shadow: inset 0 -3px 0 var(--be-eurometropole-accent), var(--be-shadow-sm); }
+
+/* --- Carte d'offre --- */
+.be-offre {
+  background: var(--be-blanc);
+  border: 1px solid var(--be-gris-clair);
+  border-radius: var(--be-radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.be-offre:hover {
+  box-shadow: var(--be-shadow);
+  transform: translateY(-1px);
+}
+
+.be-offre-titre {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--be-noir);
+  margin: 0;
+}
+.be-offre-employeur {
+  color: var(--be-ardoise);
+  font-size: 0.92rem;
+}
+.be-offre-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* --- Badges --- */
+.be-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: var(--be-gris-clair);
+  color: var(--be-ardoise);
+}
+.be-badge-cdi          { background: #DCFCE7; color: #14532D; }
+.be-badge-cdd          { background: #FEF3C7; color: #78350F; }
+.be-badge-alternance   { background: #DBEAFE; color: #1E3A8A; }
+.be-badge-interim      { background: #FCE7F3; color: #831843; }
+.be-badge-stage        { background: #E0E7FF; color: #312E81; }
+
+.be-badge-melt          { background: rgba(243,156,94,0.15);  color: #B5571D; }
+.be-badge-mel           { background: rgba(124,179,66,0.15);  color: #4D7B1F; }
+.be-badge-eurometropole { background: rgba(165,105,189,0.15); color: #6B3F88; }
+
+.be-badge-nouveau {
+  background: var(--be-nouveau);
+  color: var(--be-noir);
+  font-weight: 600;
+}
+
+.be-badge-permis {
+  background: #FEF3C7;
+  color: #78350F;
+}
+
+/* --- Mobilité : badges de temps de trajet --- */
+.be-mobilite {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--be-gris-clair);
+}
+.be-temps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: var(--be-fond);
+  border: 1px solid var(--be-gris-clair);
+  border-radius: var(--be-radius-sm);
+  font-size: 0.82rem;
+  color: var(--be-ardoise);
+}
+.be-temps.recommande {
+  background: var(--be-bleu-melt-clair);
+  border-color: var(--be-bleu-melt);
+  color: var(--be-bleu-melt-fonce);
+  font-weight: 600;
+}
+.be-temps.incertain { opacity: 0.65; }
+.be-temps.incertain::after { content: "~"; margin-left: 2px; opacity: 0.7; }
+
+/* --- Filtres --- */
+.be-filtres {
+  background: var(--be-blanc);
+  border: 1px solid var(--be-gris-clair);
+  border-radius: var(--be-radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.be-filtre-grp {
+  margin-bottom: 14px;
+}
+.be-filtre-grp:last-child { margin-bottom: 0; }
+.be-filtre-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--be-ardoise);
+}
+
+input[type="text"], select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--be-gris-clair);
+  border-radius: var(--be-radius-sm);
+  background: var(--be-blanc);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--be-noir);
+}
+input[type="text"]:focus, select:focus {
+  outline: 2px solid var(--be-bleu-melt-clair);
+  border-color: var(--be-bleu-melt);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--be-bleu-melt);
+}
+
+/* --- Bouton CTA --- */
+.be-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--be-bleu-melt);
+  color: white;
+  border: none;
+  border-radius: var(--be-radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.be-cta:hover { background: var(--be-bleu-melt-fonce); }
+.be-cta-secondaire {
+  background: transparent;
+  color: var(--be-bleu-melt);
+  border: 1px solid var(--be-bleu-melt);
+}
+.be-cta-secondaire:hover { background: var(--be-bleu-melt-clair); }
+
+/* --- Layout --- */
+.be-conteneur {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+@media (min-width: 900px) {
+  .be-conteneur { padding: 24px; }
+  .be-grille { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+}
+
+/* --- Stats --- */
+.be-stat-card {
+  background: var(--be-blanc);
+  border: 1px solid var(--be-gris-clair);
+  border-radius: var(--be-radius);
+  padding: 16px;
+}
+.be-stat-nombre {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--be-bleu-melt-fonce);
+  line-height: 1.1;
+}
+.be-stat-label {
+  font-size: 0.85rem;
+  color: var(--be-ardoise);
+  margin-top: 4px;
+}

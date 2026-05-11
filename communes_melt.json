@@ -1,0 +1,55 @@
+{
+  "niveau": "EUROMETROPOLE_BE",
+  "description": "Volet belge du GECT Eurométropole Lille-Kortrijk-Tournai — à compléter avec la liste exhaustive des communes par intercommunale",
+  "intercommunales": [
+    {
+      "code": "IEG",
+      "nom": "Intercommunale d'Étude et de Gestion",
+      "region": "Wallonie",
+      "langue": "fr",
+      "perimetre": "Arrondissement de Mouscron + commune d'Estaimpuis",
+      "communes_principales": [
+        { "nom": "Mouscron",   "nis": "54007", "lat": 50.7444, "lon": 3.2089, "pays": "BE" },
+        { "nom": "Estaimpuis", "nis": "54010", "lat": 50.7000, "lon": 3.2667, "pays": "BE" },
+        { "nom": "Comines-Warneton", "nis": "54010", "lat": 50.7672, "lon": 3.0050, "pays": "BE" }
+      ]
+    },
+    {
+      "code": "IDETA",
+      "nom": "Intercommunale de Développement Économique du Tournaisis et des Ardennes",
+      "region": "Wallonie",
+      "langue": "fr",
+      "perimetre": "Arrondissements de Tournai et Ath, communes de Lessines, Silly, Enghien",
+      "communes_principales": [
+        { "nom": "Tournai", "nis": "57081", "lat": 50.6056, "lon": 3.3878, "pays": "BE" },
+        { "nom": "Ath",     "nis": "51004", "lat": 50.6294, "lon": 3.7775, "pays": "BE" },
+        { "nom": "Lessines","nis": "55023", "lat": 50.7117, "lon": 3.8328, "pays": "BE" }
+      ]
+    },
+    {
+      "code": "LEIEDAL",
+      "nom": "Intercommunale Leiedal",
+      "region": "Flandre",
+      "langue": "nl",
+      "perimetre": "Arrondissement de Kortrijk",
+      "communes_principales": [
+        { "nom": "Kortrijk",  "nis": "34022", "lat": 50.8275, "lon": 3.2647, "pays": "BE" },
+        { "nom": "Menen",     "nis": "34027", "lat": 50.7986, "lon": 3.1247, "pays": "BE" },
+        { "nom": "Wevelgem",  "nis": "34041", "lat": 50.8108, "lon": 3.1747, "pays": "BE" }
+      ]
+    },
+    {
+      "code": "WVI",
+      "nom": "West-Vlaamse Intercommunale",
+      "region": "Flandre",
+      "langue": "nl",
+      "perimetre": "Arrondissements de Roeselare, Ieper, Tielt",
+      "communes_principales": [
+        { "nom": "Ieper",     "nis": "33011", "lat": 50.8500, "lon": 2.8833, "pays": "BE" },
+        { "nom": "Roeselare", "nis": "36015", "lat": 50.9444, "lon": 3.1228, "pays": "BE" },
+        { "nom": "Tielt",     "nis": "37015", "lat": 50.9986, "lon": 3.3253, "pays": "BE" }
+      ]
+    }
+  ],
+  "_note": "Liste exhaustive des communes à compléter en Sprint 0. Les nis affichés sont indicatifs et à vérifier auprès de Statbel pour la version définitive."
+}

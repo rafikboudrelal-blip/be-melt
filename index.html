@@ -1,0 +1,80 @@
+# Demande de licence API France Travail — BE MELT
+
+**À utiliser demain au bureau sur https://francetravail.io**
+
+---
+
+## Étapes
+
+1. Aller sur https://francetravail.io
+2. Créer un compte avec ton email pro **@la-melt.fr** (renforce la crédibilité institutionnelle)
+3. Une fois connecté, aller dans **Catalogue des API**
+4. Souscrire successivement aux 4 APIs ci-dessous (procédure rapide pour chacune)
+5. Récupérer un seul couple `client_id` / `client_secret` qui couvre tous les scopes accordés
+
+## APIs à souscrire
+
+### 1. API Offres d'emploi v2 — **PRIORITÉ ABSOLUE**
+
+Sans elle, le projet ne fonctionne pas. Scope : `api_offresdemploiv2` + `o2dsoffre`.
+
+### 2. API Référentiel des agences
+
+Pour afficher les agences France Travail à proximité sur la carte.
+
+### 3. API Événements France Travail
+
+Pour l'onglet "Événements emploi" et l'alimentation potentielle d'ARIA.
+
+### 4. API ROME 4.0 — Métiers
+
+Pour les filtres par famille de métiers dans BE MELT.
+
+---
+
+## Texte à coller dans le champ "Description de l'application"
+
+> **Nom :** BE MELT — Boussole Emploi Lys-Tourcoing
+>
+> **Type :** Outil interne d'une Mission Locale (MELT — Mission Emploi Lys-Tourcoing) à finalité d'insertion professionnelle, non commercial.
+>
+> **Description :** BE MELT est une Progressive Web App qui agrège les offres d'emploi publiques sur trois périmètres territoriaux emboîtés alignés sur les cadres institutionnels existants : (1) le territoire MELT de 12 communes du Nord, (2) la Métropole Européenne de Lille (95 communes), (3) l'Eurométropole Lille-Kortrijk-Tournai (volet transfrontalier). L'outil est destiné aux jeunes accompagnés par la MELT (16-25 ans, dispositifs PACEA et CEJ) ainsi qu'aux conseillers en insertion professionnelle. Il intègre des filtres adaptés au public ML : mobilité (permis, distance, temps de trajet par mode de transport), accessibilité transfrontalière, type de contrat.
+>
+> **Données traitées :** offres d'emploi publiques uniquement, sans aucune donnée à caractère personnel concernant les utilisateurs. Aucun compte utilisateur. Aucune transmission serveur de préférences. Stockage uniquement local côté navigateur (LocalStorage) pour la commune de référence et les modes de transport sélectionnés.
+>
+> **Périmètre géographique des appels :** communes des 95 codes INSEE de la Métropole Européenne de Lille, avec recherche élargie 25 km autour de Tourcoing pour la captation MEL.
+>
+> **Volume estimé d'appels :** environ 300 à 500 appels par jour (4 collectes quotidiennes × ~100 appels par collecte). Largement sous les quotas standards.
+>
+> **Architecture :** Python 3.11 pour la collecte, SQLite pour le stockage, GitHub Pages pour l'hébergement statique, GitHub Actions pour la planification. Code open source à terme (en cours d'évaluation par la direction MELT).
+>
+> **Articulation avec d'autres outils MELT :** BE MELT est conçu comme un complément de visualisation territoriale à ARIA, l'outil de connaissance organisationnelle interne de la MELT. Aucun croisement de données entre les deux systèmes.
+>
+> **Responsable :** Rafik [nom], conseiller MELT — [email pro]
+>
+> **Site web :** https://[nom-github].github.io/be-melt (en cours de mise en place)
+
+---
+
+## Champs additionnels du formulaire
+
+- **Type d'application :** Application web / PWA
+- **Hébergement :** GitHub Pages (HTTPS)
+- **URL de redirection OAuth :** non applicable (flux client_credentials)
+- **Adresse de contact :** ton email pro MELT
+
+## Après obtention des credentials
+
+1. Copier `client_id` et `client_secret` dans GitHub :
+   - Repo BE MELT → Settings → Secrets and variables → Actions → New repository secret
+   - Créer `FT_CLIENT_ID` et `FT_CLIENT_SECRET`
+2. Le workflow `.github/workflows/collect.yml` se déclenche automatiquement au prochain cron (ou manuellement via "Run workflow")
+3. Vérifier les logs : Actions → "Collecte des offres" → dernier run
+
+## Si la demande est refusée ou prend du temps
+
+Le collecteur **Le Forem** fonctionne sans aucune licence (Open Data Wallon ODbL). Tu peux donc déjà avoir une preuve de concept partielle avec uniquement le volet belge transfrontalier — ce qui est par ailleurs **la différenciation clé** du projet par rapport aux outils existants.
+
+```bash
+python -m collectors.le_forem
+```

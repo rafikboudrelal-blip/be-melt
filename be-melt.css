@@ -1,0 +1,126 @@
+# Démarrage rapide — Demain matin au bureau
+
+Tu as 1 heure ? Voici ce que tu peux faire concrètement.
+
+## 1. Demande de licence France Travail (20 min)
+
+→ Suivre [`02_DEMANDE_LICENCE_FT.md`](02_DEMANDE_LICENCE_FT.md)
+
+## 2. Création du repo GitHub (5 min)
+
+1. Aller sur https://github.com/new
+2. Nom : `be-melt`
+3. Visibilité : **Privé**
+4. Cocher "Add a README" puis créer
+
+## 3. Upload des fichiers (20 min)
+
+Depuis ton iMac ou directement via l'interface GitHub web :
+
+1. Cliquer "Add file" → "Upload files"
+2. Glisser-déposer tout le contenu du dossier `be-melt/` (sauf `.env` qui n'existe pas encore)
+3. Commit message : `🌱 Initialisation du projet BE MELT`
+
+**Structure à uploader :**
+```
+be-melt/
+├── README.md
+├── requirements.txt
+├── .env.example
+├── .gitignore
+├── collectors/
+│   ├── database.py
+│   ├── territoires.py
+│   ├── mobilite.py
+│   ├── france_travail.py
+│   └── le_forem.py
+├── data/
+│   ├── communes_melt.json
+│   └── communes_eurometropole_be.json
+├── site/
+│   ├── index.html
+│   ├── manifest.webmanifest
+│   └── static/css/be-melt.css
+├── .github/workflows/
+│   ├── collect.yml
+│   └── deploy.yml
+└── docs/
+    ├── 01_NOTE_CADRAGE_BE_MELT.md
+    ├── 02_DEMANDE_LICENCE_FT.md
+    └── 03_DEMARRAGE_RAPIDE.md
+```
+
+## 4. Tester localement la maquette (5 min)
+
+Sans même attendre les credentials FT, tu peux ouvrir la maquette dans un navigateur :
+
+- Sur iMac : double-clic sur `site/index.html` → ça s'ouvre dans Safari/Chrome
+- Sur S26 : impossible sans serveur HTTP, mais GitHub Pages te donnera l'URL une fois le repo poussé
+
+La maquette est **fonctionnelle en démo** avec 4 offres exemples : tu peux changer de niveau, filtrer, jouer avec les modes de transport et la durée maximale. C'est exactement ce que tu peux montrer à ta direction le jour J.
+
+## 5. Activer GitHub Pages (3 min)
+
+Repo BE MELT → Settings → Pages → Source : **GitHub Actions** → Save
+
+Au prochain push sur `main`, le site est en ligne à l'URL :
+`https://[ton-username].github.io/be-melt/`
+
+## 6. Tester Le Forem sans licence (5 min)
+
+Si tu as Python sur ton iMac :
+
+```bash
+cd ~/Downloads/be-melt
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m collectors.le_forem
+```
+
+Tu verras défiler dans la console les offres belges du Forem captées sur le périmètre Eurométropole. La base `data/be_melt.db` se remplit.
+
+## 7. Ajouter les secrets FT (2 min — quand les credentials arrivent)
+
+Repo → Settings → Secrets and variables → Actions → New repository secret
+
+- `FT_CLIENT_ID` ← valeur reçue
+- `FT_CLIENT_SECRET` ← valeur reçue
+
+Puis Actions → "Collecte des offres" → "Run workflow" → branche `main` → "Run workflow"
+
+---
+
+## Que reste-t-il à finir après ça ?
+
+✅ Validé ce soir
+- Structure repo complète
+- 5 modules Python fonctionnels
+- 12 communes MELT référencées avec coordonnées GPS
+- 12 communes belges référencées avec NIS
+- Charte CSS et maquette HTML jouable
+- Workflows GitHub Actions prêts
+- Note de cadrage et notice de demande FT
+
+🚧 À faire en Sprint 1 (semaines 1-2)
+- Référentiel exhaustif des 95 communes MEL (codes INSEE)
+- Référentiel exhaustif des ~157 communes Eurométropole BE
+- Vérification du schéma exact des champs Forem au runtime
+- Branchement vrai data du SQLite vers le frontend (export JSON à chaque build)
+- Page statistiques alimentée par vraies données
+
+🚧 À faire en Sprint 2+
+- Affichage sur carte interactive (Leaflet)
+- Isochrones OpenRouteService (V1.1)
+- Calcul TC fin OpenTripPlanner (V2)
+
+---
+
+## Tu auras une démo présentable à ta direction dans...
+
+- **30 min** : maquette HTML statique fonctionnelle avec offres fictives
+- **3 jours** : vraies offres belges via Le Forem
+- **1 semaine** (si licence FT obtenue) : vraies offres FR + BE
+- **3 semaines** : V1 complète avec mobilité, stats, PWA installable
+
+🎯 **Bonne nuit, on a fait du très bon travail ce soir.**
